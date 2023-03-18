@@ -26,10 +26,14 @@ def startup(system, systemlevel, systempro, systembadge, systemlogo, systemunloc
     print(lang.loading)
     sleep(5)
 
-    generateTables()
-    beginMenu(system, systemlevel, systempro)
+    generateTables(systemlogo)
+    systemLogo = systemlogo.replace(" ", "")
+    if systemLogo == "95":
+        mainMenu(system, systemlevel, systempro, False)
+    else:
+        mainMenu(system, systemlevel, systempro, True)
 
-def generateTables():
+def generateTables(systemlogo):
     global bm1table
     global bm2table
     global bm3table
@@ -37,6 +41,10 @@ def generateTables():
     global updatetable1
     global aptable
     global sett
+    global begintui1
+    global begintui2
+
+    systemLogo = systemlogo.replace(" ", "")
 
     # begin menu table with no load game
     bm1table = Table()
@@ -100,6 +108,25 @@ def generateTables():
     sett.add_row("1."+lang.sett2)
     sett.add_row("2."+lang.sett3)
 
+    #begin menu tui without mail (95)
+    begintui1 = Table(title="Progressbar "+systemLogo)
+    begintui1.add_column("Main Menu")
+    begintui1.add_row("1. Statistics - M")
+    begintui1.add_row("2. Bin - B")
+    begintui1.add_row("3. Achivements - A")
+    begintui1.add_row("4. Calendar - C")
+    begintui1.add_row("5. Begin Menu - S")
+
+    #begin menu tui with mail
+    begintui2 = Table(title="Progressbar "+systemLogo)
+    begintui2.add_column("Main Menu")
+    begintui2.add_row("1. Statistics - M")
+    begintui2.add_row("2. Bin - B")
+    begintui2.add_row("3. Achivements - A")
+    begintui2.add_row("4. Calendar - C")
+    begintui2.add_row("5. Mailbox - X")
+    begintui2.add_row("6. Begin Menu - S")
+
 def screenDownFun():
     # checks if you have orange segments in your bar
     if progressbar2 > 0:
@@ -136,7 +163,7 @@ def settings(systemname, systemlevel, systempro):
         else:
             settings(systemname, systemlevel, systempro)
     elif choise == "2":
-        beginMenu(systemname, systemlevel, systempro)
+        mainMenu(systemname, systemlevel, systempro)
     else:
         settings(systemname, systemlevel, systempro)
 
@@ -158,23 +185,25 @@ def restart():
 
 def instructions(systemname, systemlevel, systempro):
     clear()
-    print(center_text(lang.bm8, 80))
-    print(bold_text("1.", lang.ins1))
+    print(style_text(lang.bm8, justify="center", title=True))
+    print(style_text(lang.ins1, style="bold"))
     print(lang.ins2+"\n")
     rprint(instable)
     print("\n"+lang.ins3)
     print(lang.con1)
     input()
-    beginMenu(systemname, systemlevel, systempro)
+    mainMenu(systemname, systemlevel, systempro)
 
 def updateLog():
     global lang
-    print(center_text(lang.bm9, 80))
+    print(style_text(lang.bm9, justify="center", title=True))
     print("\n"+lang.upd1+"\n")
     rprint(updatetable1)
     choice = input("\nPick a version to see more, to go back press b: (version number)\n> ")
     if choice == "0.23" or choice == "023":
         print_paragraph("023")
+    elif choice == "0.23.1" or choice == "0231":
+        print_paragraph("0231")
     elif choice.lower() == "b":
         from boot import boot
         boot()
@@ -182,45 +211,106 @@ def updateLog():
         updateLog()
 
 # Begin menu normally
-def beginMenu(systemname, systemlevel, systempro):
+def mainMenu(systemname, systemlevel, systempro, mail : bool):
     clear()
-    if systemlevel > 1:
-        rprint(bm2table)
-    else:
-        rprint(bm1table)
-    choice = input("> ")
-    if choice == "1":
-        if systemlevel > 1:
-            startGame(systemname, systemlevel, systempro)
-        else:
-            editSystemSave(systemname, 1)
-            startGame(systemname, 1, systempro)
-    elif choice == "2":
-        if systemlevel > 1:
-            editSystemSave(systemname, 1)
-            startGame(systemname, 1, systempro)
-        else:
-            settings(systemname, systemlevel, systempro)
-    elif choice == "3":
-        if systemlevel > 1:
-            settings(systemname, systemlevel, systempro)
-        else:
-            restart()
-    elif choice == "4":
-        if systemlevel > 1:
-            restart()
-        else:
-            shutdown()
-    elif choice == "5":
-        if systemlevel > 1:
-            shutdown()
-        else:
-            instructions(systemname, systemlevel, systempro)
-    elif choice == "6":
-        if systemlevel > 1:
-            instructions(systemname, systemlevel, systempro)
-    else:
-        beginMenu(systemname, systemlevel, systempro)
+    if mail == False:
+        rprint(begintui1)
+        choisce = input("> ")
+        if choisce.lower() == "s":
+            beginmenutable()
+            def beginmenutable():
+                clear()
+                if systemlevel > 1:
+                    rprint(bm2table)
+                else:
+                    rprint(bm1table)
+                choice = input("> ")
+                if choice == "1":
+                    if systemlevel > 1:
+                        startGame(systemname, systemlevel, systempro)
+                    else:
+                        editSystemSave(systemname, 1)
+                        startGame(systemname, 1, systempro)
+                elif choice == "2":
+                    if systemlevel > 1:
+                        editSystemSave(systemname, 1)
+                        startGame(systemname, 1, systempro)
+                    else:
+                        settings(systemname, systemlevel, systempro)
+                elif choice == "3":
+                    if systemlevel > 1:
+                        settings(systemname, systemlevel, systempro)
+                    else:
+                        restart()
+                elif choice == "4":
+                    if systemlevel > 1:
+                        restart()
+                    else:
+                        shutdown()
+                elif choice == "5":
+                    if systemlevel > 1:
+                        shutdown()
+                    else:
+                        instructions(systemname, systemlevel, systempro)
+                elif choice == "6":
+                    if systemlevel > 1:
+                        instructions(systemname, systemlevel, systempro)
+                    else:
+                        mainMenu(systemname, systemlevel, systempro)
+                elif choice == "7":
+                    if systemlevel > 1:
+                        mainMenu(systemname, systemlevel, systempro)
+                else:
+                    beginmenutable()
+    elif mail == True:
+        rprint(begintui2)
+        choisce = input("> ")
+        if choisce.lower() == "s":
+            beginmenutable()
+            def beginmenutable():
+                clear()
+                if systemlevel > 1:
+                    rprint(bm2table)
+                else:
+                    rprint(bm1table)
+                choice = input("> ")
+                if choice == "1":
+                    if systemlevel > 1:
+                        startGame(systemname, systemlevel, systempro)
+                    else:
+                        editSystemSave(systemname, 1)
+                        startGame(systemname, 1, systempro)
+                elif choice == "2":
+                    if systemlevel > 1:
+                        editSystemSave(systemname, 1)
+                        startGame(systemname, 1, systempro)
+                    else:
+                        settings(systemname, systemlevel, systempro)
+                elif choice == "3":
+                    if systemlevel > 1:
+                        settings(systemname, systemlevel, systempro)
+                    else:
+                        restart()
+                elif choice == "4":
+                    if systemlevel > 1:
+                        restart()
+                    else:
+                        shutdown()
+                elif choice == "5":
+                    if systemlevel > 1:
+                        shutdown()
+                    else:
+                        instructions(systemname, systemlevel, systempro)
+                elif choice == "6":
+                    if systemlevel > 1:
+                        instructions(systemname, systemlevel, systempro)
+                    else:
+                        mainMenu(systemname, systemlevel, systempro)
+                elif choice == "7":
+                    if systemlevel > 1:
+                        mainMenu(systemname, systemlevel, systempro)
+                else:
+                    beginmenutable()
 
 
 # Begin menu during gameplay
@@ -412,7 +502,7 @@ def startGame(systemName, startLevel, proLevel):
         if catch == "q":
             print(lang.gameOver)
             sleep(3)
-            beginMenu(systemName, startLevel, proLevel)
+            mainMenu(systemName, startLevel, proLevel)
 
         if catch == "beginmenu" or catch.lower() == "bm":
             pauseBeginMenu(systemName, proLevel)

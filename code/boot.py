@@ -4,13 +4,14 @@ from clear import clear
 from checkbadge import calculateBadge
 from player import startup, updateLog
 from lang import langset
+from functions import style_text
 import sys
 import os
 import random
 
-# no touchy!!!
-version = "0.2.3"
-compileDate = "15-09-2022"
+# no touchy!!! (ver and date)
+version = "0.2.4 Beta"
+compileDate = "18-03-2023"
 
 # find systems and generate list
 osdirs = "./opsys/"
@@ -71,7 +72,6 @@ def loadSettings(system):
         startup(xobj.shortname, xlevel, xobj.prolevel, xbadge, xobj.startupstring, xsystem, xunlock)
 
 def boot():
-
     langobj = loadSettingsSave("lang")
     if langobj == False:
         langobj = langset()
@@ -85,10 +85,13 @@ def boot():
 
     while True:
         clear()
-
-        rprint(lang.sparrow)
-        rprint(lang.version.format(version, compileDate))
-        rprint(lang.dev)
+        
+        try:
+            rprint(lang.sparrow)
+            rprint(lang.version.format(version, compileDate))
+            rprint(lang.dev)
+        except ModuleNotFoundError:
+            norich()
 
         bmc = 1 # boot menu counter
         for x in osArray:
@@ -123,7 +126,7 @@ def boot():
             rprint("🇸🇪 Svenska (Swedish) (sw_SE) - [#0000FF]Cranky[/#0000FF]")
             print()
             print("As of 2023, the original game developers have ended game development and im the only one!\nWith translators.\nCatafrancia123 - March 2023")
-            rprint("Press any key to continue...")
+            print(lang.con1)
             print()
             input()
         elif choice == "chlang":
@@ -135,4 +138,17 @@ def boot():
         else:
             choice = int(choice) - 1
             loadSettings(choice)
+
+def norich():
+    print(style_text("You dont have the necessary dependencies (package) to run this app.", style="bold")+"""Do you want to install the package(s) or continue without it? (Y/N)
+    Y - Install the package(s)
+    N - Go to an non-3rd party package application""")
+    choice = input("> ")
+    if choice.lower() == "y":
+        os.system("pip install rich")
+        clear()
+        print("Restart the app.")
+    if choice.lower() == "n":
+        raise ModuleNotFoundError("You have chosen to not install the package(s) there will be a similar game with no packages soon....")
+
 boot()
