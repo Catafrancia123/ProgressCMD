@@ -6,4 +6,3 @@ def clear():
         os.system('cls')
     elif system.platform.startswith(('linux', 'cygwin', 'darwin', 'freebsd')):
         os.system('clear')
-
